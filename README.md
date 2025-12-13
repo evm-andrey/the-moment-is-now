@@ -64,6 +64,22 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
+## Docker + Let's Encrypt (nginx)
+
+First issuance (HTTP-01 via webroot):
+
+```sh
+cp .env.example .env
+# edit .env (at least LETSENCRYPT_EMAIL)
+sh ./scripts/init-letsencrypt.sh
+```
+
+After that, run the HTTPS stack:
+
+```sh
+docker compose --profile prod-ssl up -d --build web-ssl certbot-renew
+```
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
