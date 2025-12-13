@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       target: prod
     ports:
-      - "8080:80"
+      - "80:80"
     restart: unless-stopped
 
   dev:
@@ -28,7 +28,7 @@ services:
 
   dev-proxy:
     profiles: ["dev"]
-    image: nginx:1.27-alpine
+    image: nginx:1.27
     depends_on:
       - dev
     ports:
