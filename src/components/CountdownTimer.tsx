@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 interface TimeLeft {
   days: number;
@@ -40,7 +40,6 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
       const newTimeLeft = calculateTimeLeft(targetDate);
       setTimeLeft(newTimeLeft);
       
-      // Trigger tick animation on seconds
       setTickingDigit('seconds');
       setTimeout(() => setTickingDigit(null), 100);
 
@@ -63,7 +62,7 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
   if (hasCompleted) {
     return (
       <div className="flex flex-col items-center gap-6 animate-fade-in-up">
-        <div className="timer-digit text-6xl sm:text-8xl md:text-9xl animate-success-glow">
+        <div className="timer-digit text-6xl sm:text-8xl md:text-9xl animate-success-glow animate-breathe">
           00:00:00
         </div>
       </div>
@@ -71,7 +70,7 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
   }
 
   return (
-    <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3">
+    <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
       {showDays && (
         <>
           <TimerBlock 
@@ -113,13 +112,13 @@ const TimerBlock = ({ value, label, isTicking }: TimerBlockProps) => {
   return (
     <div className="flex flex-col items-center">
       <div 
-        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl transition-transform duration-100 ${
-          isTicking ? 'scale-105' : 'scale-100'
+        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl transition-all duration-150 ${
+          isTicking ? 'scale-110' : 'scale-100'
         }`}
       >
         {value}
       </div>
-      <span className="status-text text-xs sm:text-sm md:text-base mt-2 uppercase tracking-widest font-medium">
+      <span className="status-text text-[10px] sm:text-xs md:text-sm mt-3 uppercase tracking-[0.2em] font-medium">
         {label}
       </span>
     </div>
@@ -128,7 +127,7 @@ const TimerBlock = ({ value, label, isTicking }: TimerBlockProps) => {
 
 const Separator = () => {
   return (
-    <span className="timer-separator text-4xl sm:text-6xl md:text-7xl lg:text-8xl self-start mt-2 sm:mt-3 md:mt-4 animate-pulse-subtle">
+    <span className="timer-separator text-4xl sm:text-6xl md:text-7xl lg:text-8xl self-start mt-1 sm:mt-2 md:mt-3 animate-pulse-subtle">
       :
     </span>
   );

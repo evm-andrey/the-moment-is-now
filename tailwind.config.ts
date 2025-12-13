@@ -72,6 +72,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        swirl: {
+          blue: "hsl(var(--swirl-blue))",
+          gold: "hsl(var(--swirl-gold))",
+          accent: "hsl(var(--swirl-accent))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
