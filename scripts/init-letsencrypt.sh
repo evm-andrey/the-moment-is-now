@@ -1,6 +1,16 @@
 #!/usr/bin/env sh
 set -eu
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+ROOT_DIR="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+
+if [ -f "$ROOT_DIR/.env" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$ROOT_DIR/.env"
+  set +a
+fi
+
 DOMAIN="${LETSENCRYPT_DOMAIN:-uzhemozhno.ru}"
 EMAIL="${LETSENCRYPT_EMAIL:-}"
 EXTRA_DOMAINS="${LETSENCRYPT_EXTRA_DOMAINS:-}"
@@ -17,6 +27,7 @@ if [ -n "$EXTRA_DOMAINS" ]; then
   done
 fi
 
+cd "$ROOT_DIR"
 docker compose --profile prod-ssl up -d --build web-http
 
 docker compose --profile prod-ssl run --rm certbot \
