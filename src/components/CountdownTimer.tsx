@@ -82,7 +82,7 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
   if (hasCompleted) {
     return (
       <div className={`flex flex-col items-center gap-6 ${motionEnabled ? "animate-fade-in-up" : ""}`}>
-        <div className={`timer-digit text-6xl sm:text-8xl md:text-9xl ${motionEnabled ? "animate-success-glow animate-breathe" : ""}`}>
+        <div className={`timer-digit text-6xl sm:text-8xl md:text-9xl ${motionEnabled ? "animate-breathe" : ""}`}>
           00:00:00
         </div>
       </div>
