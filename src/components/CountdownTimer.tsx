@@ -100,39 +100,18 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
   const showDays = timeLeft.days > 0 || timeLeft.total > 24 * 60 * 60 * 1000;
 
   return (
-    <div className="flex flex-col items-center gap-5 sm:gap-6">
+    <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
       {showDays && (
-        <div className="flex w-full items-center justify-center sm:hidden">
-          <TimerBlock
-            value={timeLeft.days.toString()}
-            label="дней"
-            motionEnabled={motionEnabled}
-            size="days"
-          />
-        </div>
+        <>
+          <TimerBlock value={timeLeft.days.toString()} label="дней" motionEnabled={motionEnabled} />
+          <Separator motionEnabled={motionEnabled} />
+        </>
       )}
-
-      <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
-        {showDays && (
-          <>
-            <div className="hidden sm:flex">
-              <TimerBlock
-                value={timeLeft.days.toString()}
-                label="дней"
-                motionEnabled={motionEnabled}
-                size="days"
-              />
-            </div>
-            <Separator className="hidden sm:inline" motionEnabled={motionEnabled} />
-          </>
-        )}
-
-        <TimerBlock value={pad2(timeLeft.hours)} label="часов" motionEnabled={motionEnabled} />
-        <Separator motionEnabled={motionEnabled} />
-        <TimerBlock value={pad2(timeLeft.minutes)} label="минут" motionEnabled={motionEnabled} />
-        <Separator motionEnabled={motionEnabled} />
-        <TimerBlock value={pad2(timeLeft.seconds)} label="секунд" isTicking={isSecondsTicking} motionEnabled={motionEnabled} />
-      </div>
+      <TimerBlock value={pad2(timeLeft.hours)} label="часов" motionEnabled={motionEnabled} />
+      <Separator motionEnabled={motionEnabled} />
+      <TimerBlock value={pad2(timeLeft.minutes)} label="минут" motionEnabled={motionEnabled} />
+      <Separator motionEnabled={motionEnabled} />
+      <TimerBlock value={pad2(timeLeft.seconds)} label="секунд" isTicking={isSecondsTicking} motionEnabled={motionEnabled} />
     </div>
   );
 };
@@ -142,19 +121,13 @@ interface TimerBlockProps {
   label: string;
   isTicking?: boolean;
   motionEnabled: boolean;
-  size?: "default" | "days";
 }
 
-const TimerBlock = ({ value, label, isTicking, motionEnabled, size = "default" }: TimerBlockProps) => {
-  const valueClassName =
-    size === "days"
-      ? "timer-digit text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
-      : "timer-digit text-4xl sm:text-7xl md:text-8xl lg:text-9xl";
-
+const TimerBlock = ({ value, label, isTicking, motionEnabled }: TimerBlockProps) => {
   return (
     <div className="flex flex-col items-center">
       <div 
-        className={`${valueClassName} ${motionEnabled ? "transition-transform duration-150" : ""} ${
+        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl ${motionEnabled ? "transition-transform duration-150" : ""} ${
           motionEnabled && isTicking ? "scale-110" : "scale-100"
         }`}
       >
@@ -167,17 +140,9 @@ const TimerBlock = ({ value, label, isTicking, motionEnabled, size = "default" }
   );
 };
 
-const Separator = ({
-  motionEnabled,
-  className,
-}: {
-  motionEnabled: boolean;
-  className?: string;
-}) => {
+const Separator = ({ motionEnabled }: { motionEnabled: boolean }) => {
   return (
-    <span
-      className={`timer-separator mt-1 self-start text-3xl sm:mt-2 sm:text-6xl md:mt-3 md:text-7xl lg:text-8xl ${motionEnabled ? "animate-pulse-subtle" : ""} ${className ?? ""}`}
-    >
+    <span className={`timer-separator text-4xl sm:text-6xl md:text-7xl lg:text-8xl self-start mt-1 sm:mt-2 md:mt-3 ${motionEnabled ? "animate-pulse-subtle" : ""}`}>
       :
     </span>
   );

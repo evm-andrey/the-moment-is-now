@@ -78,9 +78,8 @@ const Index = () => {
         </Suspense>
       )}
       
-      <main className="relative z-10 min-h-[100svh] px-4 py-6 sm:py-8">
-        <div className="mx-auto flex min-h-[100svh] max-w-6xl flex-col items-center">
-          <div className="flex flex-1 flex-col items-center justify-center gap-10 sm:gap-14 md:gap-20">
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
+        <div className="flex flex-col items-center gap-10 sm:gap-14 md:gap-20 max-w-6xl mx-auto">
 
           <div
             className={`text-center transition-all duration-1000 ${isComplete ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}
@@ -92,7 +91,7 @@ const Index = () => {
 
           <CountdownTimer motionEnabled={motionEnabled} targetDate={TARGET_DATE} onComplete={handleComplete} />
 
-          <div className="flex h-24 items-center justify-center text-center sm:h-28">
+          <div className="text-center h-28 flex items-center justify-center">
             {isComplete ? (
               <div className={motionEnabled ? "animate-fade-in-up" : undefined}>
                 <h1 className={`timer-digit text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 ${motionEnabled ? "animate-breathe" : ""}`}>
@@ -108,14 +107,13 @@ const Index = () => {
               </p>
             )}
           </div>
-          </div>
-
-          <footer className="content-visibility-auto pb-[env(safe-area-inset-bottom)] pt-6 text-center">
-            <p className="status-text text-[10px] sm:text-xs opacity-40 tracking-[0.3em] uppercase">
-              uzhemozhno.ru
-            </p>
-          </footer>
         </div>
+
+        <footer className="content-visibility-auto absolute bottom-8 left-0 right-0 text-center">
+          <p className="status-text text-[10px] sm:text-xs opacity-40 tracking-[0.3em] uppercase">
+            uzhemozhno.ru
+          </p>
+        </footer>
       </main>
     </>
   );

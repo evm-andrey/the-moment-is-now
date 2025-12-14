@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { ensureNavStartMark, perfMark, perfMeasure, startPerfLogging } from "./perf";
@@ -9,7 +9,11 @@ perfMark("app:start");
 perfMeasure("nav:to-app-start", "nav:start", "app:start");
 
 const rootEl = document.getElementById("root")!;
-createRoot(rootEl).render(<App />);
+if (rootEl.hasChildNodes()) {
+  hydrateRoot(rootEl, <App />);
+} else {
+  createRoot(rootEl).render(<App />);
+}
 
 perfMark("app:render:commit");
 perfMeasure("app:startup", "app:start", "app:render:commit");
