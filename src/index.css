@@ -98,11 +98,14 @@
   .timer-digit {
     @apply font-mono font-bold tracking-tight;
     color: hsl(var(--timer-text));
-    text-shadow: 
-      0 0 40px hsl(var(--timer-glow) / 0.4),
-      0 0 80px hsl(var(--timer-glow) / 0.2),
-      0 0 120px hsl(var(--timer-glow) / 0.1);
-    transition: color 1s ease-in-out, text-shadow 1s ease-in-out;
+    text-shadow: 0 0 12px hsl(var(--timer-glow) / 0.25);
+    transition: color 1s ease-in-out, text-shadow 400ms ease-in-out;
+  }
+
+  .glow-enabled .timer-digit {
+    text-shadow:
+      0 0 18px hsl(var(--timer-glow) / 0.35),
+      0 0 42px hsl(var(--timer-glow) / 0.18);
   }
 
   .timer-separator {
@@ -247,13 +250,31 @@
   @keyframes success-glow {
     0%, 100% {
       text-shadow: 
-        0 0 40px hsl(var(--success-glow) / 0.4),
-        0 0 80px hsl(var(--success-glow) / 0.2);
+        0 0 18px hsl(var(--success-glow) / 0.35),
+        0 0 42px hsl(var(--success-glow) / 0.18);
     }
     50% {
       text-shadow: 
-        0 0 60px hsl(var(--success-glow) / 0.6),
-        0 0 120px hsl(var(--success-glow) / 0.3);
+        0 0 24px hsl(var(--success-glow) / 0.5),
+        0 0 60px hsl(var(--success-glow) / 0.25);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timer-digit {
+      text-shadow: none;
+      transition: color 1s ease-in-out;
+    }
+
+    .glow-enabled .timer-digit {
+      text-shadow: none;
+    }
+
+    .animate-success-glow,
+    .animate-fade-in-up,
+    .animate-breathe,
+    .animate-pulse-subtle {
+      animation: none !important;
     }
   }
 

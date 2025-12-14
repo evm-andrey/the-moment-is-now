@@ -11,6 +11,16 @@ const Index = () => {
   const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      document.documentElement.classList.add("glow-enabled");
+    });
+    return () => {
+      cancelAnimationFrame(id);
+      document.documentElement.classList.remove("glow-enabled");
+    };
+  }, []);
+
+  useEffect(() => {
     const schedule = () => {
       void loadVanGoghBackground();
       setShowBackground(true);
