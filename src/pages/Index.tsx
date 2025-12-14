@@ -4,20 +4,11 @@ import CountdownTimer from '@/components/CountdownTimer';
 const loadVanGoghBackground = () => import("@/components/VanGoghBackground");
 const VanGoghBackground = lazy(loadVanGoghBackground);
 
-const Index = () => {
-  // Target date: January 1, 2026, 00:00:00
-  const targetDate = new Date('2026-01-01T00:00:00');
-  
-  const [isComplete, setIsComplete] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [showBackground, setShowBackground] = useState(false);
+const targetDate = new Date("2026-01-01T00:00:00");
 
-  useEffect(() => {
-    setMounted(true);
-    if (new Date() >= targetDate) {
-      setIsComplete(true);
-    }
-  }, []);
+const Index = () => {
+  const [isComplete, setIsComplete] = useState(() => Date.now() >= targetDate.getTime());
+  const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
     const schedule = () => {
@@ -49,21 +40,6 @@ const Index = () => {
     setIsComplete(true);
   };
 
-  if (!mounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        {showBackground && (
-          <Suspense fallback={null}>
-            <VanGoghBackground />
-          </Suspense>
-        )}
-        <div className="timer-digit text-6xl sm:text-8xl md:text-9xl opacity-20">
-          --:--:--
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       {showBackground && (
@@ -87,15 +63,7 @@ const Index = () => {
           </div>
 
           {/* Timer */}
-          <div 
-            className="animate-fade-in-up" 
-            style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}
-          >
-            <CountdownTimer 
-              targetDate={targetDate} 
-              onComplete={handleComplete}
-            />
-          </div>
+          <CountdownTimer targetDate={targetDate} onComplete={handleComplete} />
 
           {/* Status messages */}
           <div className="text-center h-28 flex items-center justify-center">
