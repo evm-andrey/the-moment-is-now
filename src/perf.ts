@@ -83,6 +83,27 @@ export function startPerfLogging() {
     // ignore
   }
 
+  // Long Tasks: >50ms on the main thread (Chromium).
+  try {
+    const longTaskObserver = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (entry.entryType !== "longtask") continue;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const e = entry as any;
+        const duration = typeof e.duration === "number" ? e.duration : 0;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const attribution = Array.isArray((e as any).attribution) ? (e as any).attribution : [];
+        const source = attribution[0]?.name ? ` source=${attribution[0].name}` : "";
+
+        console.info(`[perf] longtask ${duration.toFixed(1)}ms at ${entry.startTime.toFixed(1)}ms${source}`);
+      }
+    });
+    longTaskObserver.observe({ type: "longtask", buffered: true });
+  } catch {
+    // ignore
+  }
+
   try {
     const paintObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
