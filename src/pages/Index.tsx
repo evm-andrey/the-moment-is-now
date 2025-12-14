@@ -10,7 +10,8 @@ const TARGET_DATE = new Date("2026-01-01T00:00:00");
 const TARGET_TS = TARGET_DATE.getTime();
 
 const Index = () => {
-  const [isComplete, setIsComplete] = useState(() => Date.now() >= TARGET_TS);
+  const [hydrated, setHydrated] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
   const [motionEnabled, setMotionEnabled] = useState(false);
 
@@ -18,7 +19,13 @@ const Index = () => {
     perfMark("index:mounted");
     perfMeasure("app:to-index-mounted", "app:start", "index:mounted");
     perfMeasure("nav:to-index-mounted", "nav:start", "index:mounted");
+    setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    setIsComplete(Date.now() >= TARGET_TS);
+  }, [hydrated]);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
@@ -89,7 +96,7 @@ const Index = () => {
             </p>
           </div>
 
-          <CountdownTimer motionEnabled={motionEnabled} targetDate={TARGET_DATE} onComplete={handleComplete} />
+          <CountdownTimer hydrated={hydrated} motionEnabled={motionEnabled} targetDate={TARGET_DATE} onComplete={handleComplete} />
 
           <div className="text-center h-28 flex items-center justify-center">
             {isComplete ? (

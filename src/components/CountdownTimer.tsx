@@ -14,6 +14,7 @@ interface CountdownTimerProps {
   targetDate: Date;
   onComplete?: () => void;
   motionEnabled?: boolean;
+  hydrated?: boolean;
 }
 
 function getTimeLeft(targetDate: Date): TimeLeft {
@@ -36,7 +37,7 @@ function pad2(value: number): string {
   return value.toString().padStart(2, "0");
 }
 
-const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: CountdownTimerProps) => {
+const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true, hydrated = true }: CountdownTimerProps) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isSecondsTicking, setIsSecondsTicking] = useState(false);
@@ -58,6 +59,7 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
   }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
     let tickTimeout: number | undefined;
     const timer = setInterval(() => {
       const newTimeLeft = getTimeLeft(targetDate);
@@ -85,7 +87,21 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
       clearInterval(timer);
       if (tickTimeout) window.clearTimeout(tickTimeout);
     };
-  }, [targetDate, hasCompleted, onComplete]);
+  }, [hydrated, targetDate, hasCompleted, onComplete]);
+
+  if (!hydrated) {
+    return (
+      <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
+        <TimerBlock value="--" label="дней" motionEnabled={false} />
+        <Separator motionEnabled={false} />
+        <TimerBlock value="--" label="часов" motionEnabled={false} />
+        <Separator motionEnabled={false} />
+        <TimerBlock value="--" label="минут" motionEnabled={false} />
+        <Separator motionEnabled={false} />
+        <TimerBlock value="--" label="секунд" motionEnabled={false} />
+      </div>
+    );
+  }
 
   if (hasCompleted) {
     return (
