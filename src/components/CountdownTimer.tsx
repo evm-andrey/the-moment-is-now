@@ -106,6 +106,7 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
           <TimerBlock 
             value={timeLeft.days.toString()} 
             label="дней" 
+            motionEnabled={motionEnabled}
           />
           <Separator motionEnabled={motionEnabled} />
         </>
@@ -113,17 +114,20 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
       <TimerBlock 
         value={pad2(timeLeft.hours)} 
         label="часов" 
+        motionEnabled={motionEnabled}
       />
       <Separator motionEnabled={motionEnabled} />
       <TimerBlock 
         value={pad2(timeLeft.minutes)} 
         label="минут" 
+        motionEnabled={motionEnabled}
       />
       <Separator motionEnabled={motionEnabled} />
       <TimerBlock 
         value={pad2(timeLeft.seconds)} 
         label="секунд" 
         isTicking={isSecondsTicking}
+        motionEnabled={motionEnabled}
       />
     </div>
   );
@@ -133,14 +137,15 @@ interface TimerBlockProps {
   value: string;
   label: string;
   isTicking?: boolean;
+  motionEnabled: boolean;
 }
 
-const TimerBlock = ({ value, label, isTicking }: TimerBlockProps) => {
+const TimerBlock = ({ value, label, isTicking, motionEnabled }: TimerBlockProps) => {
   return (
     <div className="flex flex-col items-center">
       <div 
-        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl transition-transform duration-150 ${
-          isTicking ? "scale-110" : "scale-100"
+        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl ${motionEnabled ? "transition-transform duration-150" : ""} ${
+          motionEnabled && isTicking ? "scale-110" : "scale-100"
         }`}
       >
         {value}
