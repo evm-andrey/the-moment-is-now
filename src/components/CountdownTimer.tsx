@@ -45,6 +45,16 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
   useEffect(() => {
     perfMark("timer:mounted");
     perfMeasure("app:to-timer-mounted", "app:start", "timer:mounted");
+    perfMeasure("nav:to-timer-mounted", "nav:start", "timer:mounted");
+  }, []);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      perfMark("timer:first-frame");
+      perfMeasure("app:to-timer-first-frame", "app:start", "timer:first-frame");
+      perfMeasure("nav:to-timer-first-frame", "nav:start", "timer:first-frame");
+    });
+    return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {

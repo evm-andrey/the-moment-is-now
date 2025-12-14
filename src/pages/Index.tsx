@@ -17,6 +17,7 @@ const Index = () => {
   useEffect(() => {
     perfMark("index:mounted");
     perfMeasure("app:to-index-mounted", "app:start", "index:mounted");
+    perfMeasure("nav:to-index-mounted", "nav:start", "index:mounted");
   }, []);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const Index = () => {
       document.documentElement.classList.add("glow-enabled");
       perfMark("ui:glow-enabled");
       perfMeasure("app:to-glow-enabled", "app:start", "ui:glow-enabled");
+      perfMeasure("nav:to-glow-enabled", "nav:start", "ui:glow-enabled");
 
       const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
       if (!prefersReducedMotion) {

@@ -10,6 +10,7 @@ const VanGoghBackground = () => {
   useEffect(() => {
     perfMark("bg:mounted");
     perfMeasure("bg:request-to-mounted", "bg:show-request", "bg:mounted");
+    perfMeasure("nav:to-bg-mounted", "nav:start", "bg:mounted");
   }, []);
 
   const stars = useMemo(
