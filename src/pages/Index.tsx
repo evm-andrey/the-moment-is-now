@@ -98,7 +98,7 @@ const Index = () => {
         </div>
 
         {/* Minimal footer */}
-        <footer className="absolute bottom-8 left-0 right-0 text-center">
+        <footer className="content-visibility-auto absolute bottom-8 left-0 right-0 text-center">
           <p className="status-text text-[10px] sm:text-xs opacity-40 tracking-[0.3em] uppercase">
             uzhemozhno.ru
           </p>
