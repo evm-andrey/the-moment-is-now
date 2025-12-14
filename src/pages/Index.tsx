@@ -11,10 +11,16 @@ const TARGET_TS = TARGET_DATE.getTime();
 const Index = () => {
   const [isComplete, setIsComplete] = useState(() => Date.now() >= TARGET_TS);
   const [showBackground, setShowBackground] = useState(false);
+  const [motionEnabled, setMotionEnabled] = useState(false);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
       document.documentElement.classList.add("glow-enabled");
+
+      const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+      if (!prefersReducedMotion) {
+        setMotionEnabled(true);
+      }
     });
     return () => {
       cancelAnimationFrame(id);
@@ -24,7 +30,6 @@ const Index = () => {
 
   useEffect(() => {
     const schedule = () => {
-      void loadVanGoghBackground();
       setShowBackground(true);
     };
 
@@ -71,12 +76,12 @@ const Index = () => {
             </p>
           </div>
 
-          <CountdownTimer targetDate={TARGET_DATE} onComplete={handleComplete} />
+          <CountdownTimer motionEnabled={motionEnabled} targetDate={TARGET_DATE} onComplete={handleComplete} />
 
           <div className="text-center h-28 flex items-center justify-center">
             {isComplete ? (
-              <div className="animate-fade-in-up">
-                <h1 className="timer-digit text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 animate-breathe">
+              <div className={motionEnabled ? "animate-fade-in-up" : undefined}>
+                <h1 className={`timer-digit text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-6 ${motionEnabled ? "animate-breathe" : ""}`}>
                   Уже можно
                 </h1>
                 <p className="status-text text-sm sm:text-base md:text-lg tracking-[0.15em]">
@@ -84,7 +89,7 @@ const Index = () => {
                 </p>
               </div>
             ) : (
-              <p className="status-text text-xs sm:text-sm tracking-[0.15em] animate-pulse-subtle">
+              <p className={`status-text text-xs sm:text-sm tracking-[0.15em] ${motionEnabled ? "animate-pulse-subtle" : ""}`}>
                 Ожидание продолжается...
               </p>
             )}

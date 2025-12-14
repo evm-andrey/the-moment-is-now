@@ -11,6 +11,7 @@ interface TimeLeft {
 interface CountdownTimerProps {
   targetDate: Date;
   onComplete?: () => void;
+  motionEnabled?: boolean;
 }
 
 function getTimeLeft(targetDate: Date): TimeLeft {
@@ -33,7 +34,7 @@ function pad2(value: number): string {
   return value.toString().padStart(2, "0");
 }
 
-const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
+const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: CountdownTimerProps) => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isSecondsTicking, setIsSecondsTicking] = useState(false);
@@ -64,8 +65,8 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
 
   if (hasCompleted) {
     return (
-      <div className="flex flex-col items-center gap-6 animate-fade-in-up">
-        <div className="timer-digit text-6xl sm:text-8xl md:text-9xl animate-success-glow animate-breathe">
+      <div className={`flex flex-col items-center gap-6 ${motionEnabled ? "animate-fade-in-up" : ""}`}>
+        <div className={`timer-digit text-6xl sm:text-8xl md:text-9xl ${motionEnabled ? "animate-success-glow animate-breathe" : ""}`}>
           00:00:00
         </div>
       </div>
@@ -80,19 +81,19 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
             value={timeLeft.days.toString()} 
             label="дней" 
           />
-          <Separator />
+          <Separator motionEnabled={motionEnabled} />
         </>
       )}
       <TimerBlock 
         value={pad2(timeLeft.hours)} 
         label="часов" 
       />
-      <Separator />
+      <Separator motionEnabled={motionEnabled} />
       <TimerBlock 
         value={pad2(timeLeft.minutes)} 
         label="минут" 
       />
-      <Separator />
+      <Separator motionEnabled={motionEnabled} />
       <TimerBlock 
         value={pad2(timeLeft.seconds)} 
         label="секунд" 
@@ -125,9 +126,9 @@ const TimerBlock = ({ value, label, isTicking }: TimerBlockProps) => {
   );
 };
 
-const Separator = () => {
+const Separator = ({ motionEnabled }: { motionEnabled: boolean }) => {
   return (
-    <span className="timer-separator text-4xl sm:text-6xl md:text-7xl lg:text-8xl self-start mt-1 sm:mt-2 md:mt-3 animate-pulse-subtle">
+    <span className={`timer-separator text-4xl sm:text-6xl md:text-7xl lg:text-8xl self-start mt-1 sm:mt-2 md:mt-3 ${motionEnabled ? "animate-pulse-subtle" : ""}`}>
       :
     </span>
   );

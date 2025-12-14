@@ -39,7 +39,19 @@ function inlineBuiltCss(): Plugin {
         (_match, href) => (cssHrefs.includes(href) ? "" : _match),
       );
 
-      return withoutCssLinks.replace("</head>", `<style>${css}</style></head>`);
+      let updated = withoutCssLinks.replace("</head>", `<style>${css}</style></head>`);
+
+      // Preload the entry module script to reduce render-blocking gaps on slower networks.
+      const moduleScriptMatch = updated.match(/<script\b[^>]*type="module"[^>]*src="([^"]+\.js)"[^>]*><\/script>/);
+      if (moduleScriptMatch) {
+        const entrySrc = moduleScriptMatch[1];
+        const preloadTag = `<link rel="modulepreload" href="${entrySrc}">`;
+        if (!updated.includes(preloadTag)) {
+          updated = updated.replace(moduleScriptMatch[0], `${preloadTag}\n${moduleScriptMatch[0]}`);
+        }
+      }
+
+      return updated;
     },
   };
 }
