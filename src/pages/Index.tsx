@@ -1,7 +1,8 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import CountdownTimer from '@/components/CountdownTimer';
 
-const VanGoghBackground = lazy(() => import("@/components/VanGoghBackground"));
+const loadVanGoghBackground = () => import("@/components/VanGoghBackground");
+const VanGoghBackground = lazy(loadVanGoghBackground);
 
 const Index = () => {
   // Target date: January 1, 2026, 00:00:00
@@ -19,8 +20,18 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const raf = requestAnimationFrame(() => setShowBackground(true));
-    return () => cancelAnimationFrame(raf);
+    const schedule = () => {
+      void loadVanGoghBackground();
+      setShowBackground(true);
+    };
+
+    if (window.requestIdleCallback) {
+      const id = window.requestIdleCallback(schedule, { timeout: 5000 });
+      return () => window.cancelIdleCallback?.(id);
+    }
+
+    const timeoutId = window.setTimeout(schedule, 2000);
+    return () => window.clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
