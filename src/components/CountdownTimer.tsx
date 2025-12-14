@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 interface TimeLeft {
   days: number;
@@ -13,35 +13,39 @@ interface CountdownTimerProps {
   onComplete?: () => void;
 }
 
-const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
-  const [hasCompleted, setHasCompleted] = useState(false);
-  const [tickingDigit, setTickingDigit] = useState<string | null>(null);
+function getTimeLeft(targetDate: Date): TimeLeft {
+  const difference = targetDate.getTime() - Date.now();
 
-  function calculateTimeLeft(target: Date): TimeLeft {
-    const now = new Date().getTime();
-    const difference = target.getTime() - now;
-
-    if (difference <= 0) {
-      return { days: 0, hours: 0, minutes: 0, seconds: 0, total: 0 };
-    }
-
-    return {
-      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / (1000 * 60)) % 60),
-      seconds: Math.floor((difference / 1000) % 60),
-      total: difference,
-    };
+  if (difference <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, total: 0 };
   }
 
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / (1000 * 60)) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+    total: difference,
+  };
+}
+
+function pad2(value: number): string {
+  return value.toString().padStart(2, "0");
+}
+
+const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
+  const [hasCompleted, setHasCompleted] = useState(false);
+  const [isSecondsTicking, setIsSecondsTicking] = useState(false);
+
   useEffect(() => {
+    let tickTimeout: number | undefined;
     const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft(targetDate);
+      const newTimeLeft = getTimeLeft(targetDate);
       setTimeLeft(newTimeLeft);
       
-      setTickingDigit('seconds');
-      setTimeout(() => setTickingDigit(null), 100);
+      setIsSecondsTicking(true);
+      tickTimeout = window.setTimeout(() => setIsSecondsTicking(false), 100);
 
       if (newTimeLeft.total <= 0 && !hasCompleted) {
         setHasCompleted(true);
@@ -50,12 +54,11 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
       }
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (tickTimeout) window.clearTimeout(tickTimeout);
+    };
   }, [targetDate, hasCompleted, onComplete]);
-
-  const formatNumber = (num: number, digits: number = 2): string => {
-    return num.toString().padStart(digits, '0');
-  };
 
   const showDays = timeLeft.days > 0 || timeLeft.total > 24 * 60 * 60 * 1000;
 
@@ -74,29 +77,26 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
       {showDays && (
         <>
           <TimerBlock 
-            value={formatNumber(timeLeft.days)} 
+            value={timeLeft.days.toString()} 
             label="дней" 
-            isTicking={tickingDigit === 'days'}
           />
           <Separator />
         </>
       )}
       <TimerBlock 
-        value={formatNumber(timeLeft.hours)} 
+        value={pad2(timeLeft.hours)} 
         label="часов" 
-        isTicking={tickingDigit === 'hours'}
       />
       <Separator />
       <TimerBlock 
-        value={formatNumber(timeLeft.minutes)} 
+        value={pad2(timeLeft.minutes)} 
         label="минут" 
-        isTicking={tickingDigit === 'minutes'}
       />
       <Separator />
       <TimerBlock 
-        value={formatNumber(timeLeft.seconds)} 
+        value={pad2(timeLeft.seconds)} 
         label="секунд" 
-        isTicking={tickingDigit === 'seconds'}
+        isTicking={isSecondsTicking}
       />
     </div>
   );
@@ -112,8 +112,8 @@ const TimerBlock = ({ value, label, isTicking }: TimerBlockProps) => {
   return (
     <div className="flex flex-col items-center">
       <div 
-        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl transition-all duration-150 ${
-          isTicking ? 'scale-110' : 'scale-100'
+        className={`timer-digit text-5xl sm:text-7xl md:text-8xl lg:text-9xl transition-transform duration-150 ${
+          isTicking ? "scale-110" : "scale-100"
         }`}
       >
         {value}
