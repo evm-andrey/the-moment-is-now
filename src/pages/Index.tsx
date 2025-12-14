@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, lazy, Suspense } from "react";
 import CountdownTimer from '@/components/CountdownTimer';
-import VanGoghBackground from '@/components/VanGoghBackground';
+
+const VanGoghBackground = lazy(() => import("@/components/VanGoghBackground"));
 
 const Index = () => {
   // Target date: January 1, 2026, 00:00:00
@@ -8,12 +9,18 @@ const Index = () => {
   
   const [isComplete, setIsComplete] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     if (new Date() >= targetDate) {
       setIsComplete(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setShowBackground(true));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   useEffect(() => {
@@ -34,7 +41,11 @@ const Index = () => {
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <VanGoghBackground />
+        {showBackground && (
+          <Suspense fallback={null}>
+            <VanGoghBackground />
+          </Suspense>
+        )}
         <div className="timer-digit text-6xl sm:text-8xl md:text-9xl opacity-20">
           --:--:--
         </div>
@@ -44,7 +55,11 @@ const Index = () => {
 
   return (
     <>
-      <VanGoghBackground />
+      {showBackground && (
+        <Suspense fallback={null}>
+          <VanGoghBackground />
+        </Suspense>
+      )}
       
       <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
         <div className="flex flex-col items-center gap-10 sm:gap-14 md:gap-20 max-w-6xl mx-auto">
