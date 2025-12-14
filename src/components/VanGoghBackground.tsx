@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 import { perfMark, perfMeasure } from "@/perf";
+import "@/vangogh.css";
 
 const STAR_COUNT = 20;
 
