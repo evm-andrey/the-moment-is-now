@@ -1,8 +1,17 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+
+import { perfMark, perfMeasure } from "@/perf";
 
 const STAR_COUNT = 20;
 
+perfMark("bg:module-loaded");
+
 const VanGoghBackground = () => {
+  useEffect(() => {
+    perfMark("bg:mounted");
+    perfMeasure("bg:request-to-mounted", "bg:show-request", "bg:mounted");
+  }, []);
+
   const stars = useMemo(
     () =>
       Array.from({ length: STAR_COUNT }, (_, id) => ({

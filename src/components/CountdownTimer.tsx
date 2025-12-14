@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { perfMark, perfMeasure } from "@/perf";
 
 interface TimeLeft {
   days: number;
@@ -38,18 +40,32 @@ const CountdownTimer = ({ targetDate, onComplete, motionEnabled = true }: Countd
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(targetDate));
   const [hasCompleted, setHasCompleted] = useState(false);
   const [isSecondsTicking, setIsSecondsTicking] = useState(false);
+  const hasMarkedFirstTickRef = useRef(false);
+
+  useEffect(() => {
+    perfMark("timer:mounted");
+    perfMeasure("app:to-timer-mounted", "app:start", "timer:mounted");
+  }, []);
 
   useEffect(() => {
     let tickTimeout: number | undefined;
     const timer = setInterval(() => {
       const newTimeLeft = getTimeLeft(targetDate);
       setTimeLeft(newTimeLeft);
-      
+
+      if (!hasMarkedFirstTickRef.current) {
+        hasMarkedFirstTickRef.current = true;
+        perfMark("timer:first-tick");
+        perfMeasure("app:to-timer-first-tick", "app:start", "timer:first-tick");
+      }
+
       setIsSecondsTicking(true);
       tickTimeout = window.setTimeout(() => setIsSecondsTicking(false), 100);
 
       if (newTimeLeft.total <= 0 && !hasCompleted) {
         setHasCompleted(true);
+        perfMark("timer:complete");
+        perfMeasure("app:to-timer-complete", "app:start", "timer:complete");
         onComplete?.();
         clearInterval(timer);
       }

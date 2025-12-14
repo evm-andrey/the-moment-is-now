@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 
 import CountdownTimer from "@/components/CountdownTimer";
+import { perfMark, perfMeasure } from "@/perf";
 
 const loadVanGoghBackground = () => import("@/components/VanGoghBackground");
 const VanGoghBackground = lazy(loadVanGoghBackground);
@@ -14,12 +15,20 @@ const Index = () => {
   const [motionEnabled, setMotionEnabled] = useState(false);
 
   useEffect(() => {
+    perfMark("index:mounted");
+    perfMeasure("app:to-index-mounted", "app:start", "index:mounted");
+  }, []);
+
+  useEffect(() => {
     const id = requestAnimationFrame(() => {
       document.documentElement.classList.add("glow-enabled");
+      perfMark("ui:glow-enabled");
+      perfMeasure("app:to-glow-enabled", "app:start", "ui:glow-enabled");
 
       const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
       if (!prefersReducedMotion) {
         setMotionEnabled(true);
+        perfMark("ui:motion-enabled");
       }
     });
     return () => {
@@ -30,7 +39,9 @@ const Index = () => {
 
   useEffect(() => {
     const schedule = () => {
+      perfMark("bg:show-request");
       setShowBackground(true);
+      perfMeasure("app:to-bg-request", "app:start", "bg:show-request");
     };
 
     if (window.requestIdleCallback) {
